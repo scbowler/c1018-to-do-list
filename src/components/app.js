@@ -1,11 +1,10 @@
 import 'materialize-css/dist/css/materialize.min.css';
 import 'materialize-css/dist/js/materialize';
 import React, { Component } from 'react';
+import { Route } from 'react-router-dom';
 import axios from 'axios';
 import List from './list';
 import AddItem from './add_item';
-import dummyList from '../data/to_do_list';
-import { randomString } from '../helpers';
 
 const BASE_URL = 'http://api.reactprototypes.com/todos';
 const API_KEY = '?key=c1018_demouser';
@@ -23,7 +22,7 @@ class App extends Component {
         
         await axios.post(BASE_URL + API_KEY, item);
 
-        this.getListData();
+        await this.getListData();
     }
 
     async getListData() {
@@ -60,10 +59,13 @@ class App extends Component {
 
         return (
             <div className="container">
-                <h1 className="center">To Do List</h1>
-                
-                <AddItem add={this.addItem}/>
-                <List delete={this.deleteItem} toDos={list}/>
+                <Route path="/" exact render={(props) => {
+                    return <List {...props} delete={this.deleteItem} toDos={list} />;
+                }}/>
+
+                <Route path="/add-item" render={(props) => {
+                    return <AddItem {...props} add={this.addItem} />;
+                }}/>
             </div>
         );
     }
